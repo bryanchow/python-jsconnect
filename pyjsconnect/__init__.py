@@ -1,6 +1,7 @@
 import json
 from hashlib import md5
 from urllib import urlencode
+from collections import OrderedDict
 
 
 class JSConnectError(Exception):
@@ -47,15 +48,12 @@ def make_jsconnect_response(client_id,
                 user_data[key] = ""
 
         # Calculate signature
-        query_str = urlencode(user_data)
+        response = OrderedDict(sorted(user_data.items()))
+        query_str = urlencode(response)
         signature = hash_func("%s%s" % (query_str, secret)).hexdigest()
 
-        user_data.update({
-            'client_id': client_id,
-            'signature': signature,
-        })
-
-        response = user_data
+        response['client_id'] = client_id
+        response['signature'] = signature
 
     json_response = json.dumps(response)
 
