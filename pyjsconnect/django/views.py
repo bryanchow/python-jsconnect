@@ -15,7 +15,10 @@ except AttributeError:
     )
 
 
-def jsconnect(request):
+def jsconnect(request, hash_func=None):
+
+    if hash_func is None:
+        hash_func = sha1
 
     user_data = {}
 
@@ -30,7 +33,7 @@ def jsconnect(request):
         secret = JSCONNECT_SECRET,
         request_data = request.GET.dict(),
         user_data = user_data,
-        hash_func = sha1,
+        hash_func = hash_func,
     )
 
     return HttpResponse(json_response, mimetype=mimetype)
